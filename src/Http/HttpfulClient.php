@@ -2,6 +2,7 @@
 
 namespace GenesisGlobal\Salesforce\Http;
 
+use GenesisGlobal\Salesforce\Http\Exception\HttpRequestException;
 use Httpful\Mime;
 use Httpful\Request as Client;
 use Httpful\Request;
@@ -17,7 +18,7 @@ class HttpfulClient implements HttpClientInterface
      * @param string $uri
      * @param null $options
      * @return \Httpful\Response
-     * @throws \HttpRequestException
+     * @throws HttpRequestException
      */
     public function get(string $uri, $options = null)
     {
@@ -29,7 +30,7 @@ class HttpfulClient implements HttpClientInterface
             $response = $request->send();
 
         } catch (\Exception $e) {
-            throw new \HttpRequestException('Unexpected server response.' . $e->getMessage(), $e->getCode());
+            throw new HttpRequestException('Unexpected server response.' . $e->getMessage(), $e->getCode());
         }
         return $response;
     }
@@ -40,7 +41,7 @@ class HttpfulClient implements HttpClientInterface
      * @param $sendsType
      * @param null $options
      * @return \Httpful\Response
-     * @throws \HttpRequestException
+     * @throws HttpRequestException
      */
     public function post(string $uri, $data, $sendsType, $options = null)
     {
@@ -54,7 +55,7 @@ class HttpfulClient implements HttpClientInterface
             $response = $request->send();
 
         } catch (\Exception $e) {
-            throw new \HttpRequestException('Unexpected server response.' . $e->getMessage(), $e->getCode());
+            throw new HttpRequestException('Unexpected server response.' . $e->getMessage(), $e->getCode());
         }
         return $response;
     }
@@ -65,7 +66,7 @@ class HttpfulClient implements HttpClientInterface
      * @param $sendsType
      * @param null $options
      * @return \Httpful\Response
-     * @throws \HttpRequestException
+     * @throws HttpRequestException
      */
     public function patch(string $uri, $data, $sendsType, $options = null)
     {
@@ -79,7 +80,7 @@ class HttpfulClient implements HttpClientInterface
             $response = $request->send();
 
         } catch (\Exception $e) {
-            throw new \HttpRequestException('Unexpected server response.' . $e->getMessage(), $e->getCode());
+            throw new HttpRequestException('Unexpected server response.' . $e->getMessage(), $e->getCode());
         }
         return $response;
     }

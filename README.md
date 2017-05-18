@@ -6,15 +6,15 @@ How to use:
 ```
 $config = [
     'authentication' => [
-        'endpoint' => http://endpoint,
-        'client_id' => id,
-        'client_secret' => secret,
-        'username' => name,
-        'password' => pass
+        'endpoint' => 'http://endpoint',
+        'client_id' => 'id',
+        'client_secret' => 'secret',
+        'username' => 'name',
+        'password' => 'pass'
     ],
     'rest' => [
-        'version' => v35.0,
-        'endpoint' => http://endpoint
+        'version' => 'v35.0',
+        'endpoint' => 'http://endpoint'
     ]
 ];
 $salesforceClient = new GenesisGlobal\Salesforce\Client\SalesforceClientFactory($config);

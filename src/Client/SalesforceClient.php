@@ -92,10 +92,20 @@ class SalesforceClient implements SalesforceClientInterface
 
         $response = $this->httpClient->$method(
             $this->urlGenerator->getUrl($action, $params),
-            [ 'headers' => [ 'Authorization' => $this->authenticator->getAccessToken()] ]
+            [ 'headers' => $this->getAuthorizationHeaders() ]
         );
 
         return $response;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getAuthorizationHeaders()
+    {
+        return [
+            'Authorization' => 'OAuth ' . $this->authenticator->getAccessToken()
+        ];
     }
 
     /**
