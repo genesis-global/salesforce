@@ -1,0 +1,12 @@
+{
+  "name": "genesis-global/Salesforce",
+  "description": "Provides OAuth2 authentication and exposes Salesforce REST API methods in OOP friendly way.",
+  "require": {
+    "nategood/httpful": "^0.2.20"
+  },
+  "autoload": {
+    "psr-4": {
+      "GenesisGlobal\\Salesforce\\": "src/"
+    }
+  }
+}
