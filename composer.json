@@ -1,5 +1,5 @@
 {
-  "name": "genesis-global/Salesforce",
+  "name": "genesis-global/salesforce",
   "description": "Provides OAuth2 authentication and exposes Salesforce REST API methods in OOP friendly way.",
   "require": {
     "nategood/httpful": "^0.2.20"
