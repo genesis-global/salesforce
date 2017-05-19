@@ -1,19 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: qbik
- * Date: 19.05.2017
- * Time: 09:35
- */
 
 namespace GenesisGlobal\Salesforce\Authentication;
 
-
 /**
- * Class UsernamePasswordCredentials
+ * Class Credentials
  * @package GenesisGlobal\Salesforce\Authentication
  */
-class UsernamePasswordCredentials implements CredentialsKeeperInterface
+class Credentials implements CredentialsKeeperInterface
 {
     /**
      * @var

@@ -3,6 +3,8 @@
 namespace GenesisGlobal\Salesforce\Client;
 
 
+use GenesisGlobal\Salesforce\Authentication\Credentials;
+use GenesisGlobal\Salesforce\Authentication\SalesforceAuthenticationCallback;
 use GenesisGlobal\Salesforce\Authentication\SalesforceAuthenticatorUrlGenerator;
 use GenesisGlobal\Salesforce\Authentication\SalesforceUsernamePasswordAuthenticator;
 use GenesisGlobal\Salesforce\Http\HttpfulClient;
@@ -39,14 +41,19 @@ class SalesforceClientFactory implements SalesforceClientFactoryInterface
         }
 
         $httpClient = new HttpfulClient();
-        $authUrlGenerator = new SalesforceAuthenticatorUrlGenerator($config['authentication']);
+        $authUrlGenerator = new SalesforceAuthenticatorUrlGenerator($config['authentication']['endpoint']);
+        $credentials = new Credentials($config['authentication']);
         $authenticator = new SalesforceUsernamePasswordAuthenticator(
             $httpClient,
             $authUrlGenerator,
-            $config['authentication']
+            $credentials,
+            new SalesforceAuthenticationCallback()
         );
 
-        $salesforceUrlGenerator = new SalesforceUrlGenerator($config['rest']);
+        $salesforceUrlGenerator = new SalesforceUrlGenerator(
+            $config['rest']['endpoint'],
+            $config['rest']['version']
+        );
         $client = new SalesforceClient(
             $httpClient,
             $salesforceUrlGenerator,
