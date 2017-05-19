@@ -24,12 +24,13 @@ class SalesforceUrlGenerator implements UrlGeneratorInterface
 
     /**
      * SalesforceUrlGenerator constructor.
-     * @param $config
+     * @param $endpoint
+     * @param $version
      */
-    public function __construct($config)
+    public function __construct($endpoint, $version)
     {
-        $this->version = $config['version'];
-        $this->endpoint = $config['endpoint'];
+        $this->endpoint = $endpoint;
+        $this->version = $version;
     }
 
     /**

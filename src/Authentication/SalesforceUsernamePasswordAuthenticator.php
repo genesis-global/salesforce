@@ -59,23 +59,23 @@ class SalesforceUsernamePasswordAuthenticator implements AuthenticatorInterface
      * SalesforceUsernamePasswordAuthenticator constructor.
      * @param HttpClientInterface $httpClient
      * @param UrlGeneratorInterface $urlGenerator
-     * @param $config
-     * @param AuthenticationCallbackInterface $authenticationCallback
+     * @param CredentialsKeeperInterface $credentialsKeeper
+     * @param AuthenticationCallbackInterface|null $authenticationCallback
      */
     public function __construct(
         HttpClientInterface $httpClient,
         UrlGeneratorInterface $urlGenerator,
-        $config,
+        CredentialsKeeperInterface $credentialsKeeper,
         AuthenticationCallbackInterface $authenticationCallback = null)
     {
         $this->httpClient = $httpClient;
         $this->urlGenerator = $urlGenerator;
         $this->authenticationCallback = $authenticationCallback;
 
-        $this->clientId = $config['client_id'];
-        $this->clientSecret = $config['client_secret'];
-        $this->username = $config['username'];
-        $this->password = $config['password'];
+        $this->clientId = $credentialsKeeper->getCredentials()['client_id'];
+        $this->clientSecret = $credentialsKeeper->getCredentials()['client_secret'];
+        $this->username = $credentialsKeeper->getCredentials()['username'];
+        $this->password = $credentialsKeeper->getCredentials()['password'];
     }
 
     /**

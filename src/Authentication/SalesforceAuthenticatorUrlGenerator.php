@@ -18,11 +18,11 @@ class SalesforceAuthenticatorUrlGenerator implements UrlGeneratorInterface
 
     /**
      * SalesforceAuthenticatorUrlGenerator constructor.
-     * @param $config
+     * @param $endpoint
      */
-    public function __construct($config)
+    public function __construct($endpoint)
     {
-        $this->endpoint = $config['endpoint'];
+        $this->endpoint = $endpoint;
     }
 
     /**
