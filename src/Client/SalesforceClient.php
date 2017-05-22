@@ -14,6 +14,11 @@ use GenesisGlobal\Salesforce\Http\UrlGeneratorInterface;
 class SalesforceClient implements SalesforceClientInterface
 {
     /**
+     * Content of body type json
+     */
+    const BODY_TYPE_JSON = 'application/json';
+
+    /**
      * @var HttpClientInterface
      */
     protected $httpClient;
@@ -51,7 +56,10 @@ class SalesforceClient implements SalesforceClientInterface
      */
     public function get(string $action = null, $query = null)
     {
-        return $this->request('get', $action, $query);
+        return $this->httpClient->get(
+            $this->urlGenerator->getUrl($action, $this->resolveParams($query)),
+            [ 'headers' => $this->getAuthorizationHeaders() ]
+        );
     }
 
     /**
@@ -62,7 +70,12 @@ class SalesforceClient implements SalesforceClientInterface
      */
     public function post(string $action = null, $data = null, $query = null)
     {
-        return $this->request('post', $action, $query);
+        return $this->httpClient->post(
+            $this->urlGenerator->getUrl($action, $this->resolveParams($query)),
+            $data,
+            self::BODY_TYPE_JSON,
+            [ 'headers' => $this->getAuthorizationHeaders() ]
+        );
     }
 
     /**
@@ -73,29 +86,25 @@ class SalesforceClient implements SalesforceClientInterface
      */
     public function patch(string $action = null, $data = null, $query = null)
     {
-        return $this->request('patch', $action, $query);
+        return $this->httpClient->post(
+            $this->urlGenerator->getUrl($action, $this->resolveParams($query)),
+            $data,
+            self::BODY_TYPE_JSON,
+            [ 'headers' => $this->getAuthorizationHeaders() ]
+        );
     }
 
     /**
-     * @param string $type
-     * @param $action
      * @param $query
-     * @return mixed
+     * @return array|null
      */
-    protected function request(string $type, $action, $query)
+    protected function resolveParams($query)
     {
         $params = null;
         if ($query) {
             $params = ['q' => $query];
         }
-        $method = $this->resolveMethod($type);
-
-        $response = $this->httpClient->$method(
-            $this->urlGenerator->getUrl($action, $params),
-            [ 'headers' => $this->getAuthorizationHeaders() ]
-        );
-
-        return $response;
+        return $params;
     }
 
     /**
@@ -106,28 +115,5 @@ class SalesforceClient implements SalesforceClientInterface
         return [
             'Authorization' => 'OAuth ' . $this->authenticator->getAccessToken()
         ];
-    }
-
-    /**
-     * @param $type
-     * @return string
-     */
-    protected function resolveMethod(string $type)
-    {
-        $type = strtolower($type);
-        switch ($type) {
-            case 'post':
-                $method = 'post';
-                break;
-            case 'patch':
-                $method = 'patch';
-                break;
-            case 'delete':
-                $method = 'delete';
-                break;
-            default:
-                $method = 'get';
-        }
-        return $method;
     }
 }
