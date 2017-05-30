@@ -41,6 +41,11 @@ class SalesforceUsernamePasswordAuthenticator implements AuthenticatorInterface
     protected $password;
 
     /**
+     * @var string
+     */
+    protected $securityToken;
+
+    /**
      * @var HttpClientInterface
      */
     protected $httpClient;
@@ -76,6 +81,7 @@ class SalesforceUsernamePasswordAuthenticator implements AuthenticatorInterface
         $this->clientSecret = $credentialsKeeper->getCredentials()['client_secret'];
         $this->username = $credentialsKeeper->getCredentials()['username'];
         $this->password = $credentialsKeeper->getCredentials()['password'];
+        $this->securityToken = $credentialsKeeper->getCredentials()['security_token'];
     }
 
     /**
@@ -125,7 +131,7 @@ class SalesforceUsernamePasswordAuthenticator implements AuthenticatorInterface
             'client_id' => $this->clientId,
             'client_secret' => $this->clientSecret,
             'username' => $this->username,
-            'password' => $this->password
+            'password' => $this->password . $this->securityToken
         ];
     }
 }
