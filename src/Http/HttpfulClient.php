@@ -23,8 +23,7 @@ class HttpfulClient implements HttpClientInterface
     public function get(string $uri, $options = null)
     {
         try {
-            $request = Client::get($uri)
-                ->expects(Mime::JSON);
+            $request = Client::get($uri);
 
             $this->addOptionsToRequest($request, $options);
             $response = $request->send();
@@ -48,7 +47,6 @@ class HttpfulClient implements HttpClientInterface
         try {
             $request = Client::post($uri)
                 ->sendsType($sendsType)
-                ->expects(Mime::JSON)
                 ->body($this->prepareBodyForPost($data, $sendsType));
 
             $this->addOptionsToRequest($request, $options);
