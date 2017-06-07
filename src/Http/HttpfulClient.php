@@ -15,9 +15,6 @@ use Httpful\Response;
  */
 class HttpfulClient implements HttpClientInterface
 {
-
-    const BAD_RESPONSE_CODE = 100;
-
     /**
      * @param string $uri
      * @param null $options
@@ -137,7 +134,7 @@ class HttpfulClient implements HttpClientInterface
     protected function afterRequest(Response $response)
     {
         if ($response->code >= 400) {
-            throw new BadResponseException('Bad response.', self::BAD_RESPONSE_CODE, null, $response);
+            throw new BadResponseException('Bad response.', $response->code, null, $response);
         }
     }
 }
