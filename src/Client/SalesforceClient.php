@@ -86,7 +86,7 @@ class SalesforceClient implements SalesforceClientInterface
      */
     public function patch(string $action = null, $data = null, $query = null)
     {
-        return $this->httpClient->post(
+        return $this->httpClient->patch(
             $this->urlGenerator->getUrl($action, $this->resolveParams($query)),
             $data,
             self::BODY_TYPE_JSON,
