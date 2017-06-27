@@ -5,6 +5,7 @@ namespace GenesisGlobal\Salesforce\Client;
 
 use GenesisGlobal\Salesforce\Authentication\AuthenticatorInterface;
 use GenesisGlobal\Salesforce\Http\HttpClientInterface;
+use GenesisGlobal\Salesforce\Http\Response\ResponseCreatorInterface;
 use GenesisGlobal\Salesforce\Http\UrlGeneratorInterface;
 
 /**
@@ -34,19 +35,27 @@ class SalesforceClient implements SalesforceClientInterface
     protected $authenticator;
 
     /**
+     * @var ResponseCreatorInterface
+     */
+    protected $responseCreator;
+
+    /**
      * SalesforceClient constructor.
      * @param HttpClientInterface $httpClient
      * @param UrlGeneratorInterface $urlGenerator
      * @param AuthenticatorInterface $authenticator
+     * @param ResponseCreatorInterface $responseCreator
      */
     public function __construct(
         HttpClientInterface $httpClient,
         UrlGeneratorInterface $urlGenerator,
-        AuthenticatorInterface $authenticator)
+        AuthenticatorInterface $authenticator,
+        ResponseCreatorInterface $responseCreator)
     {
         $this->httpClient = $httpClient;
         $this->urlGenerator = $urlGenerator;
         $this->authenticator = $authenticator;
+        $this->responseCreator = $responseCreator;
     }
 
     /**
@@ -56,10 +65,10 @@ class SalesforceClient implements SalesforceClientInterface
      */
     public function get(string $action = null, $query = null)
     {
-        return $this->httpClient->get(
+        return $this->responseCreator->create($this->httpClient->get(
             $this->urlGenerator->getUrl($action, $this->resolveParams($query)),
             [ 'headers' => $this->getAuthorizationHeaders() ]
-        );
+        ));
     }
 
     /**
@@ -70,12 +79,12 @@ class SalesforceClient implements SalesforceClientInterface
      */
     public function post(string $action = null, $data = null, $query = null)
     {
-        return $this->httpClient->post(
+        return $this->responseCreator->create($this->httpClient->post(
             $this->urlGenerator->getUrl($action, $this->resolveParams($query)),
             $data,
             self::BODY_TYPE_JSON,
             [ 'headers' => $this->getAuthorizationHeaders() ]
-        );
+        ));
     }
 
     /**
@@ -86,12 +95,12 @@ class SalesforceClient implements SalesforceClientInterface
      */
     public function patch(string $action = null, $data = null, $query = null)
     {
-        return $this->httpClient->patch(
+        return $this->responseCreator->create($this->httpClient->patch(
             $this->urlGenerator->getUrl($action, $this->resolveParams($query)),
             $data,
             self::BODY_TYPE_JSON,
             [ 'headers' => $this->getAuthorizationHeaders() ]
-        );
+        ));
     }
 
     /**
