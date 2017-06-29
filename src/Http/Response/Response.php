@@ -23,6 +23,25 @@ class Response implements ResponseInterface
     /** @var  array */
     protected $content;
 
+    /** @var  int */
+    protected $code;
+
+    /**
+     * @return int
+     */
+    public function getCode(): int
+    {
+        return $this->code;
+    }
+
+    /**
+     * @param int $code
+     */
+    public function setCode(int $code)
+    {
+        $this->code = $code;
+    }
+
     /**
      * @return bool
      */

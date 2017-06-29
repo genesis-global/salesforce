@@ -28,6 +28,7 @@ class ResponseCreator implements ResponseCreatorInterface
             $response = new Response();
 
             $response->setContent($httpResponse->body);
+            $response->setCode($httpResponse->code);
 
             // if errors exist, lets add it!
             if (isset($httpResponse->body->errors) && !empty($httpResponse->body->errors)) {
