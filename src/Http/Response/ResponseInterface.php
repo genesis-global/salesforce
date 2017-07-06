@@ -18,7 +18,7 @@ interface ResponseInterface
     /**
      * @param bool $success
      */
-    public function setSuccess(bool $success);
+    public function setSuccess($success);
 
     /**
      * @return ResponseError[]
@@ -28,7 +28,7 @@ interface ResponseInterface
     /**
      * @param ResponseError[] $errors
      */
-    public function setErrors(array $errors);
+    public function setErrors($errors);
 
     /**
      * @param ResponseError $error
@@ -44,5 +44,5 @@ interface ResponseInterface
     /**
      * @param array $content
      */
-    public function setContent(array $content);
+    public function setContent($content);
 }

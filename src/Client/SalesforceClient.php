@@ -63,7 +63,7 @@ class SalesforceClient implements SalesforceClientInterface
      * @param null $query
      * @return mixed
      */
-    public function get(string $action = null, $query = null)
+    public function get($action = null, $query = null)
     {
         return $this->responseCreator->create($this->httpClient->get(
             $this->urlGenerator->getUrl($action, $this->resolveParams($query)),
@@ -77,7 +77,7 @@ class SalesforceClient implements SalesforceClientInterface
      * @param null $query
      * @return mixed
      */
-    public function post(string $action = null, $data = null, $query = null)
+    public function post($action = null, $data = null, $query = null)
     {
         return $this->responseCreator->create($this->httpClient->post(
             $this->urlGenerator->getUrl($action, $this->resolveParams($query)),
@@ -93,7 +93,7 @@ class SalesforceClient implements SalesforceClientInterface
      * @param null $query
      * @return mixed
      */
-    public function patch(string $action = null, $data = null, $query = null)
+    public function patch($action = null, $data = null, $query = null)
     {
         return $this->responseCreator->create($this->httpClient->patch(
             $this->urlGenerator->getUrl($action, $this->resolveParams($query)),

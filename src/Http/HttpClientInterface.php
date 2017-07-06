@@ -14,7 +14,7 @@ interface HttpClientInterface
      * @param null $options
      * @return mixed
      */
-    public function get(string $uri, $options = null);
+    public function get($uri, $options = null);
 
     /**
      * @param string $uri
@@ -23,7 +23,7 @@ interface HttpClientInterface
      * @param null $options
      * @return mixed
      */
-    public function post(string $uri, $data, $sendsType, $options = null);
+    public function post($uri, $data, $sendsType, $options = null);
 
     /**
      * @param string $uri
@@ -32,5 +32,5 @@ interface HttpClientInterface
      * @param null $options
      * @return mixed
      */
-    public function patch(string $uri, $data, $sendsType, $options = null);
+    public function patch($uri, $data, $sendsType, $options = null);
 }

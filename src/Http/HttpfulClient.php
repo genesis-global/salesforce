@@ -21,7 +21,7 @@ class HttpfulClient implements HttpClientInterface
      * @return \Httpful\Response
      * @throws HttpRequestException
      */
-    public function get(string $uri, $options = null)
+    public function get($uri, $options = null)
     {
         try {
             $request = Client::get($uri);
@@ -44,7 +44,7 @@ class HttpfulClient implements HttpClientInterface
      * @return \Httpful\Response
      * @throws HttpRequestException
      */
-    public function post(string $uri, $data, $sendsType, $options = null)
+    public function post($uri, $data, $sendsType, $options = null)
     {
         try {
             $request = Client::post($uri)
@@ -69,7 +69,7 @@ class HttpfulClient implements HttpClientInterface
      * @return \Httpful\Response
      * @throws HttpRequestException
      */
-    public function patch(string $uri, $data, $sendsType, $options = null)
+    public function patch($uri, $data, $sendsType, $options = null)
     {
         try {
             $request = Client::patch($uri)

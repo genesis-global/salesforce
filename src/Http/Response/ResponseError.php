@@ -23,7 +23,7 @@ class ResponseError implements ResponseErrorInterface
     /**
      * @return string
      */
-    public function getMessage(): string
+    public function getMessage()
     {
         return $this->message;
     }
@@ -31,7 +31,7 @@ class ResponseError implements ResponseErrorInterface
     /**
      * @param string $message
      */
-    public function setMessage(string $message)
+    public function setMessage($message)
     {
         $this->message = $message;
     }
@@ -39,7 +39,7 @@ class ResponseError implements ResponseErrorInterface
     /**
      * @return string
      */
-    public function getCode(): string
+    public function getCode()
     {
         return $this->code;
     }
@@ -47,7 +47,7 @@ class ResponseError implements ResponseErrorInterface
     /**
      * @param string $code
      */
-    public function setCode(string $code)
+    public function setCode($code)
     {
         $this->code = $code;
     }

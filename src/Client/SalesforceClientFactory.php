@@ -8,6 +8,7 @@ use GenesisGlobal\Salesforce\Authentication\SalesforceAuthenticationCallback;
 use GenesisGlobal\Salesforce\Authentication\SalesforceAuthenticatorUrlGenerator;
 use GenesisGlobal\Salesforce\Authentication\SalesforceUsernamePasswordAuthenticator;
 use GenesisGlobal\Salesforce\Http\HttpfulClient;
+use GenesisGlobal\Salesforce\Http\Response\ResponseCreator;
 
 /**
  * Class SalesforceClientFactory
@@ -58,7 +59,8 @@ class SalesforceClientFactory implements SalesforceClientFactoryInterface
         $client = new SalesforceClient(
             $httpClient,
             $salesforceUrlGenerator,
-            $authenticator
+            $authenticator,
+            new ResponseCreator()
         );
 
         return $client;

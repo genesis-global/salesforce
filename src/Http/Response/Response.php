@@ -29,7 +29,7 @@ class Response implements ResponseInterface
     /**
      * @return int
      */
-    public function getCode(): int
+    public function getCode()
     {
         return $this->code;
     }
@@ -37,7 +37,7 @@ class Response implements ResponseInterface
     /**
      * @param int $code
      */
-    public function setCode(int $code)
+    public function setCode($code)
     {
         $this->code = $code;
     }
@@ -45,7 +45,7 @@ class Response implements ResponseInterface
     /**
      * @return bool
      */
-    public function isSuccess(): bool
+    public function isSuccess()
     {
         return $this->success;
     }
@@ -53,7 +53,7 @@ class Response implements ResponseInterface
     /**
      * @param bool $success
      */
-    public function setSuccess(bool $success)
+    public function setSuccess($success)
     {
         $this->success = $success;
     }
@@ -61,7 +61,7 @@ class Response implements ResponseInterface
     /**
      * @return ResponseError[]
      */
-    public function getErrors(): array
+    public function getErrors()
     {
         return $this->errors;
     }
@@ -69,7 +69,7 @@ class Response implements ResponseInterface
     /**
      * @param ResponseError[] $errors
      */
-    public function setErrors(array $errors)
+    public function setErrors($errors)
     {
         $this->errors = $errors;
     }
@@ -87,7 +87,7 @@ class Response implements ResponseInterface
     /**
      * @return array
      */
-    public function getContent(): array
+    public function getContent()
     {
         return $this->content;
     }
@@ -95,7 +95,7 @@ class Response implements ResponseInterface
     /**
      * @param array $content
      */
-    public function setContent(array $content)
+    public function setContent($content)
     {
         $this->content = $content;
     }

@@ -5,7 +5,12 @@
   "keywords": [ "salesforce" ],
   "license": "MIT",
   "require": {
+    "php": "^5.6",
     "nategood/httpful": "^0.2.20"
+  },
+  "require-dev": {
+    "sensio/generator-bundle": "~3.0",
+    "phpunit/phpunit": "~5.6"
   },
   "autoload": {
     "psr-4": {
