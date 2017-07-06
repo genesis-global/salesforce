@@ -37,12 +37,12 @@ interface ResponseInterface
     public function addError(ResponseError $error);
 
     /**
-     * @return array
+     * @return mixed
      */
     public function getContent();
 
     /**
-     * @param array $content
+     * @param $content
      */
     public function setContent($content);
 }

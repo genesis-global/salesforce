@@ -27,7 +27,7 @@ class SalesforceClientFactory implements SalesforceClientFactoryInterface
      *          client_secret => secret,
      *          username => name,
      *          password => pass,
-     *          securityToken => cs-0ds-s0dfsd
+     *          security_token => cs-0ds-s0dfsd
      *      ],
      *      rest => [
      *          version => 2.0,

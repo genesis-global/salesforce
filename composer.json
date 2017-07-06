@@ -14,7 +14,8 @@
   },
   "autoload": {
     "psr-4": {
-      "GenesisGlobal\\Salesforce\\": "src/"
+      "GenesisGlobal\\Salesforce\\": "src/",
+      "GenesisGlobal\\Salesforce\\Tests\\": "tests/"
     }
   }
 }

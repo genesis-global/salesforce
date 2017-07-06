@@ -85,7 +85,7 @@ class Response implements ResponseInterface
     }
 
     /**
-     * @return array
+     * @return mixed
      */
     public function getContent()
     {
@@ -93,7 +93,7 @@ class Response implements ResponseInterface
     }
 
     /**
-     * @param array $content
+     * @param $content
      */
     public function setContent($content)
     {
