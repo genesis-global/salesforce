@@ -26,7 +26,7 @@ class ResponseCreator implements ResponseCreatorInterface
     {
         if ($httpResponse instanceof \Httpful\Response) {
             $response = new Response();
-            $response->setSuccess(true);
+            $response->setSuccess($this->resolveSuccess($httpResponse));
             $response->setContent($httpResponse->body);
             $response->setCode($httpResponse->code);
 
@@ -60,5 +60,17 @@ class ResponseCreator implements ResponseCreatorInterface
         $response->addError($error);
 
         return $response;
+    }
+
+    /**
+     * @param \Httpful\Response $response
+     * @return bool
+     */
+    protected function resolveSuccess(\Httpful\Response $response)
+    {
+        if ($response->code >= 400) {
+            return false;
+        }
+        return true;
     }
 }

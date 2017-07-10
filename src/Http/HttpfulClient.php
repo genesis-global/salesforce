@@ -2,12 +2,10 @@
 
 namespace GenesisGlobal\Salesforce\Http;
 
-use GenesisGlobal\Salesforce\Http\Exception\BadResponseException;
 use GenesisGlobal\Salesforce\Http\Exception\HttpRequestException;
 use Httpful\Mime;
 use Httpful\Request as Client;
 use Httpful\Request;
-use Httpful\Response;
 
 /**
  * Class HttpfulClient
@@ -32,7 +30,6 @@ class HttpfulClient implements HttpClientInterface
         } catch (\Exception $e) {
             throw new HttpRequestException('Unexpected server response.' . $e->getMessage(), $e->getCode());
         }
-        $this->afterRequest($response);
         return $response;
     }
 
@@ -57,7 +54,6 @@ class HttpfulClient implements HttpClientInterface
         } catch (\Exception $e) {
             throw new HttpRequestException('Unexpected server response.' . $e->getMessage(), $e->getCode());
         }
-        $this->afterRequest($response);
         return $response;
     }
 
@@ -82,7 +78,6 @@ class HttpfulClient implements HttpClientInterface
         } catch (\Exception $e) {
             throw new HttpRequestException('Unexpected server response.' . $e->getMessage(), $e->getCode());
         }
-        $this->afterRequest($response);
         return $response;
     }
 
@@ -127,14 +122,4 @@ class HttpfulClient implements HttpClientInterface
         return $request;
     }
 
-    /**
-     * @param Response $response
-     * @throws BadResponseException
-     */
-    protected function afterRequest(Response $response)
-    {
-        if ($response->code >= 400) {
-            throw new BadResponseException('Bad response.', $response->code, null, $response);
-        }
-    }
 }

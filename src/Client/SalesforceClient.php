@@ -77,7 +77,7 @@ class SalesforceClient implements SalesforceClientInterface
         } catch (BadResponseException $e) {
 
             // we return Response with success=false
-            return $this->responseCreator->create(null);
+            return $this->responseCreator->create($e->getResponse());
         }
     }
 
@@ -100,7 +100,7 @@ class SalesforceClient implements SalesforceClientInterface
         } catch (BadResponseException $e) {
 
             // we return Response with success=false
-            return $this->responseCreator->create(null);
+            return $this->responseCreator->create($e->getResponse());
         }
     }
 
@@ -123,7 +123,7 @@ class SalesforceClient implements SalesforceClientInterface
         } catch (BadResponseException $e) {
 
             // we return Response with success=false
-            return $this->responseCreator->create(null);
+            return $this->responseCreator->create($e->getResponse());
         }
     }
 
