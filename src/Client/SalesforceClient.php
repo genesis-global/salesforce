@@ -4,6 +4,7 @@ namespace GenesisGlobal\Salesforce\Client;
 
 
 use GenesisGlobal\Salesforce\Authentication\AuthenticatorInterface;
+use GenesisGlobal\Salesforce\Http\Exception\BadResponseException;
 use GenesisGlobal\Salesforce\Http\HttpClientInterface;
 use GenesisGlobal\Salesforce\Http\Response\ResponseCreatorInterface;
 use GenesisGlobal\Salesforce\Http\Response\ResponseInterface;
@@ -66,10 +67,18 @@ class SalesforceClient implements SalesforceClientInterface
      */
     public function get($action = null, $query = null)
     {
-        return $this->responseCreator->create($this->httpClient->get(
-            $this->urlGenerator->getUrl($action, $this->resolveParams($query)),
-            [ 'headers' => $this->getAuthorizationHeaders() ]
-        ));
+        try {
+            $salesforceResponse = $this->httpClient->get(
+                $this->urlGenerator->getUrl($action, $this->resolveParams($query)),
+                [ 'headers' => $this->getAuthorizationHeaders() ]
+            );
+            return $this->responseCreator->create($salesforceResponse);
+
+        } catch (BadResponseException $e) {
+
+            // we return Response with success=false
+            return $this->responseCreator->create(null);
+        }
     }
 
     /**
@@ -80,12 +89,19 @@ class SalesforceClient implements SalesforceClientInterface
      */
     public function post($action = null, $data = null, $query = null)
     {
-        return $this->responseCreator->create($this->httpClient->post(
-            $this->urlGenerator->getUrl($action, $this->resolveParams($query)),
-            $data,
-            self::BODY_TYPE_JSON,
-            [ 'headers' => $this->getAuthorizationHeaders() ]
-        ));
+        try {
+            $httpResponse = $this->httpClient->post(
+                $this->urlGenerator->getUrl($action, $this->resolveParams($query)),
+                $data,
+                self::BODY_TYPE_JSON,
+                [ 'headers' => $this->getAuthorizationHeaders() ]
+            );
+            return $this->responseCreator->create($httpResponse);
+        } catch (BadResponseException $e) {
+
+            // we return Response with success=false
+            return $this->responseCreator->create(null);
+        }
     }
 
     /**
@@ -96,12 +112,19 @@ class SalesforceClient implements SalesforceClientInterface
      */
     public function patch($action = null, $data = null, $query = null)
     {
-        return $this->responseCreator->create($this->httpClient->patch(
-            $this->urlGenerator->getUrl($action, $this->resolveParams($query)),
-            $data,
-            self::BODY_TYPE_JSON,
-            [ 'headers' => $this->getAuthorizationHeaders() ]
-        ));
+        try {
+            $httpResponse = $this->httpClient->patch(
+                $this->urlGenerator->getUrl($action, $this->resolveParams($query)),
+                $data,
+                self::BODY_TYPE_JSON,
+                [ 'headers' => $this->getAuthorizationHeaders() ]
+            );
+            return $this->responseCreator->create($httpResponse);
+        } catch (BadResponseException $e) {
+
+            // we return Response with success=false
+            return $this->responseCreator->create(null);
+        }
     }
 
     /**

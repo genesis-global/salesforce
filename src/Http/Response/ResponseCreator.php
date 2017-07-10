@@ -26,7 +26,7 @@ class ResponseCreator implements ResponseCreatorInterface
     {
         if ($httpResponse instanceof \Httpful\Response) {
             $response = new Response();
-
+            $response->setSuccess(true);
             $response->setContent($httpResponse->body);
             $response->setCode($httpResponse->code);
 
