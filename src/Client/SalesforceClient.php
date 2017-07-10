@@ -6,6 +6,7 @@ namespace GenesisGlobal\Salesforce\Client;
 use GenesisGlobal\Salesforce\Authentication\AuthenticatorInterface;
 use GenesisGlobal\Salesforce\Http\HttpClientInterface;
 use GenesisGlobal\Salesforce\Http\Response\ResponseCreatorInterface;
+use GenesisGlobal\Salesforce\Http\Response\ResponseInterface;
 use GenesisGlobal\Salesforce\Http\UrlGeneratorInterface;
 
 /**
@@ -61,7 +62,7 @@ class SalesforceClient implements SalesforceClientInterface
     /**
      * @param string $action
      * @param null $query
-     * @return mixed
+     * @return ResponseInterface
      */
     public function get($action = null, $query = null)
     {
@@ -75,7 +76,7 @@ class SalesforceClient implements SalesforceClientInterface
      * @param string|null $action
      * @param null $data
      * @param null $query
-     * @return mixed
+     * @return ResponseInterface
      */
     public function post($action = null, $data = null, $query = null)
     {
@@ -91,7 +92,7 @@ class SalesforceClient implements SalesforceClientInterface
      * @param string|null $action
      * @param null $data
      * @param null $query
-     * @return mixed
+     * @return ResponseInterface
      */
     public function patch($action = null, $data = null, $query = null)
     {
