@@ -5,7 +5,6 @@
   "keywords": [ "salesforce" ],
   "license": "MIT",
   "require": {
-    "php": "^5.6",
     "nategood/httpful": "^0.2.20"
   },
   "require-dev": {
