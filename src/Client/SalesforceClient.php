@@ -9,12 +9,15 @@ use GenesisGlobal\Salesforce\Http\HttpClientInterface;
 use GenesisGlobal\Salesforce\Http\Response\ResponseCreatorInterface;
 use GenesisGlobal\Salesforce\Http\Response\ResponseInterface;
 use GenesisGlobal\Salesforce\Http\UrlGeneratorInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 
 /**
  * Class SalesforceClient
  * @package GenesisGlobal\Salesforce\Client
  */
-class SalesforceClient implements SalesforceClientInterface
+class SalesforceClient implements SalesforceClientInterface, LoggerAwareInterface
 {
     /**
      * Content of body type json
@@ -42,6 +45,11 @@ class SalesforceClient implements SalesforceClientInterface
     protected $responseCreator;
 
     /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * SalesforceClient constructor.
      * @param HttpClientInterface $httpClient
      * @param UrlGeneratorInterface $urlGenerator
@@ -67,18 +75,21 @@ class SalesforceClient implements SalesforceClientInterface
      */
     public function get($action = null, $query = null)
     {
+        $url = $this->urlGenerator->getUrl($action, $this->resolveParams($query));
+
         try {
             $salesforceResponse = $this->httpClient->get(
-                $this->urlGenerator->getUrl($action, $this->resolveParams($query)),
+                $url,
                 [ 'headers' => $this->getAuthorizationHeaders() ]
             );
-            return $this->responseCreator->create($salesforceResponse);
-
         } catch (BadResponseException $e) {
 
             // we return Response with success=false
-            return $this->responseCreator->create($e->getResponse());
+            return $this->manageError($e, $url);
         }
+        $response = $this->responseCreator->create($salesforceResponse);
+        $this->logRequest($url, null, $response->getCode(), $response->getContent());
+        return $this->responseCreator->create($salesforceResponse);
     }
 
     /**
@@ -89,19 +100,22 @@ class SalesforceClient implements SalesforceClientInterface
      */
     public function post($action = null, $data = null, $query = null)
     {
+        $url = $this->urlGenerator->getUrl($action, $this->resolveParams($query));
         try {
             $httpResponse = $this->httpClient->post(
-                $this->urlGenerator->getUrl($action, $this->resolveParams($query)),
+                $url,
                 $data,
                 self::BODY_TYPE_JSON,
                 [ 'headers' => $this->getAuthorizationHeaders() ]
             );
-            return $this->responseCreator->create($httpResponse);
         } catch (BadResponseException $e) {
 
             // we return Response with success=false
-            return $this->responseCreator->create($e->getResponse());
+            return $this->manageError($e, $url, $data);
         }
+        $response = $this->responseCreator->create($httpResponse);
+        $this->logRequest($url, $data, $response->getCode(), $response->getContent());
+        return $response;
     }
 
     /**
@@ -112,19 +126,21 @@ class SalesforceClient implements SalesforceClientInterface
      */
     public function patch($action = null, $data = null, $query = null)
     {
+        $url = $this->urlGenerator->getUrl($action, $this->resolveParams($query));
         try {
             $httpResponse = $this->httpClient->patch(
-                $this->urlGenerator->getUrl($action, $this->resolveParams($query)),
+                $url,
                 $data,
                 self::BODY_TYPE_JSON,
                 [ 'headers' => $this->getAuthorizationHeaders() ]
             );
-            return $this->responseCreator->create($httpResponse);
         } catch (BadResponseException $e) {
 
-            // we return Response with success=false
-            return $this->responseCreator->create($e->getResponse());
+            return $this->manageError($e, $url, $data);
         }
+        $response = $this->responseCreator->create($httpResponse);
+        $this->logRequest($url, $data, $response->getCode(), $response->getContent());
+        return $response;
     }
 
     /**
@@ -148,5 +164,42 @@ class SalesforceClient implements SalesforceClientInterface
         return [
             'Authorization' => 'OAuth ' . $this->authenticator->getAccessToken()
         ];
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * @param BadResponseException $e
+     * @param $url
+     * @param null $data
+     * @return ResponseInterface
+     */
+    protected function manageError(BadResponseException $e, $url, $data = null)
+    {
+        if ($this->logger) {
+            $this->logger->error($e->getMessage(), [
+                'url' => $url,
+                'data' => ($data ? $data: 'empty')
+            ]);
+        }
+        return $this->responseCreator->create($e->getResponse());
+    }
+
+    protected function logRequest($url, $data = null, $responseCode = null, $response = null)
+    {
+        if ($this->logger) {
+            $this->logger->log(LogLevel::DEBUG, '[Request Log]', [
+                'url' => $url,
+                'data' => ($data ? $data : 'empty'),
+                'responseCode' => $responseCode,
+                'response' => $response
+            ]);
+        }
     }
 }

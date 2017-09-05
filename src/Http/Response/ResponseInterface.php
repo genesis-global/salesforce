@@ -45,4 +45,14 @@ interface ResponseInterface
      * @param $content
      */
     public function setContent($content);
+
+    /**
+     * @param int $code
+     */
+    public function setCode($code);
+
+    /**
+     * @return int
+     */
+    public function getCode();
 }

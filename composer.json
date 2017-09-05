@@ -5,7 +5,8 @@
   "keywords": [ "salesforce" ],
   "license": "MIT",
   "require": {
-    "nategood/httpful": "^0.2.20"
+    "nategood/httpful": "^0.2.20",
+    "psr/log": "~1.0"
   },
   "require-dev": {
     "sensio/generator-bundle": "~3.0",
