@@ -52,4 +52,14 @@ class ResponseError implements ResponseErrorInterface
         $this->code = $code;
     }
 
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'code' => $this->code,
+            'message' => $this->message
+        ];
+    }
 }

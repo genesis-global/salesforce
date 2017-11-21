@@ -40,11 +40,36 @@ class ResponseCreator implements ResponseCreatorInterface
                     $response->addError($error);
                 }
             }
+            // other error format response
+            elseif (is_array($httpResponse->body) && count($httpResponse->body) > 0) {
+
+                foreach ($httpResponse->body as $bodyElement) {
+                    $bodyElement = $this->parseBodyElement($bodyElement);
+                    if (is_array($bodyElement) && isset($bodyElement['errorCode'])) {
+                        $error = new ResponseError();
+                        $error->setCode($bodyElement['errorCode']);
+                        $error->setMessage($bodyElement['message']);
+                        $response->addError($error);
+                    }
+                }
+            }
         } else {
             // it should not happen really
             $response = $this->getFailedHttpResponse();
         }
         return $response;
+    }
+
+    /**
+     * @param $bodyElement
+     * @return array
+     */
+    protected function parseBodyElement($bodyElement)
+    {
+        if ($bodyElement !== null && is_object($bodyElement)) {
+            return (array)$bodyElement;
+        }
+        return $bodyElement;
     }
 
     /**

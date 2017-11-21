@@ -63,6 +63,18 @@ class ResponseCreatorTest extends TestCase
             $creator->create($responseWithError)->getErrors()[1]->getCode()
         );
 
+        $errorOtherFormat = [
+            [
+                'errorCode' => "INVALID_FIELD",
+                'message' => 'Invalid field etc.'
+            ]
+        ];
+
+        $responseWithErrorOtherFormat = new HttpfulResponse(json_encode($errorOtherFormat), Mime::JSON, 400);
+
+        $this->assertEquals('Invalid field etc.', $creator->create($responseWithErrorOtherFormat)->getErrors()[0]->getMessage());
+        $this->assertEquals('INVALID_FIELD', $creator->create($responseWithErrorOtherFormat)->getErrors()[0]->getCode());
+
         $responseWithSuccess = new HttpfulResponse(json_encode(['someKey' => 'someValue']), Mime::JSON, 200);
         $this->assertObjectHasAttribute('someKey', $creator->create($responseWithSuccess)->getContent());
         $this->assertEquals('someValue', $creator->create($responseWithSuccess)->getContent()->someKey);
