@@ -182,6 +182,10 @@ class SalesforceClient implements SalesforceClientInterface, LoggerAwareInterfac
      */
     protected function manageError(BadResponseException $e, $url, $data = null)
     {
+        if ($e->getCode() === 401) {
+            $this->authenticator->refreshToken();
+        }
+
         if ($this->logger) {
             $this->logger->error($e->getMessage(), [
                 'url' => $url,

@@ -107,6 +107,7 @@ class SalesforceUsernamePasswordAuthenticator implements AuthenticatorInterface
 
         // return access_token
         if ($response->code == 200 && isset($response->body->access_token)) {
+            $this->token = $response->body->access_token;
             return $response->body->access_token;
         }
 
