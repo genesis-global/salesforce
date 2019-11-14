@@ -2,7 +2,6 @@
 
 namespace GenesisGlobal\Salesforce\Client;
 
-
 use GenesisGlobal\Salesforce\Authentication\AuthenticatorInterface;
 use GenesisGlobal\Salesforce\Http\Exception\BadResponseException;
 use GenesisGlobal\Salesforce\Http\HttpClientInterface;
@@ -12,6 +11,7 @@ use GenesisGlobal\Salesforce\Http\UrlGeneratorInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use Httpful\Http;
 
 /**
  * Class SalesforceClient
@@ -50,6 +50,13 @@ class SalesforceClient implements SalesforceClientInterface, LoggerAwareInterfac
     protected $logger;
 
     /**
+     * @var PerformanceLoggerInterface
+     */
+    protected $performanceLogger;
+
+    protected $timer;
+
+    /**
      * SalesforceClient constructor.
      * @param HttpClientInterface $httpClient
      * @param UrlGeneratorInterface $urlGenerator
@@ -78,17 +85,16 @@ class SalesforceClient implements SalesforceClientInterface, LoggerAwareInterfac
         $url = $this->urlGenerator->getUrl($action, $this->resolveParams($query));
 
         try {
+            $this->requestStartTime();
             $salesforceResponse = $this->httpClient->get(
                 $url,
                 [ 'headers' => $this->getAuthorizationHeaders() ]
             );
         } catch (BadResponseException $e) {
-
-            // we return Response with success=false
-            return $this->manageError($e, $url);
+            return $this->manageError($e, $url, null, Http::GET);
         }
         $response = $this->responseCreator->create($salesforceResponse);
-        $this->logRequest($url, null, $response->getCode(), $response->getContent());
+        $this->logRequest($url, null, $response->getCode(), $response->getContent(), Http::GET);
         return $this->responseCreator->create($salesforceResponse);
     }
 
@@ -102,6 +108,7 @@ class SalesforceClient implements SalesforceClientInterface, LoggerAwareInterfac
     {
         $url = $this->urlGenerator->getUrl($action, $this->resolveParams($query));
         try {
+            $this->requestStartTime();
             $httpResponse = $this->httpClient->post(
                 $url,
                 $data,
@@ -109,12 +116,10 @@ class SalesforceClient implements SalesforceClientInterface, LoggerAwareInterfac
                 [ 'headers' => $this->getAuthorizationHeaders() ]
             );
         } catch (BadResponseException $e) {
-
-            // we return Response with success=false
-            return $this->manageError($e, $url, $data);
+            return $this->manageError($e, $url, $data, Http::POST);
         }
         $response = $this->responseCreator->create($httpResponse);
-        $this->logRequest($url, $data, $response->getCode(), $response->getContent());
+        $this->logRequest($url, $data, $response->getCode(), $response->getContent(), Http::POST);
         return $response;
     }
 
@@ -128,6 +133,7 @@ class SalesforceClient implements SalesforceClientInterface, LoggerAwareInterfac
     {
         $url = $this->urlGenerator->getUrl($action, $this->resolveParams($query));
         try {
+            $this->requestStartTime();
             $httpResponse = $this->httpClient->patch(
                 $url,
                 $data,
@@ -135,11 +141,10 @@ class SalesforceClient implements SalesforceClientInterface, LoggerAwareInterfac
                 [ 'headers' => $this->getAuthorizationHeaders() ]
             );
         } catch (BadResponseException $e) {
-
-            return $this->manageError($e, $url, $data);
+            return $this->manageError($e, $url, $data, Http::PATCH);
         }
         $response = $this->responseCreator->create($httpResponse);
-        $this->logRequest($url, $data, $response->getCode(), $response->getContent());
+        $this->logRequest($url, $data, $response->getCode(), $response->getContent(), Http::PATCH);
         return $response;
     }
 
@@ -166,6 +171,29 @@ class SalesforceClient implements SalesforceClientInterface, LoggerAwareInterfac
         ];
     }
 
+    protected function requestStartTime(): void
+    {
+        if (!$this->performanceLogger) {
+            return;
+        }
+
+        $this->timer = microtime(true);
+    }
+
+    protected function requestStopTime(): void
+    {
+        $stop = microtime(true);
+        $this->timer = $stop - $this->timer;
+    }
+
+    protected function performanceLog($url, $method, $responseCode): void
+    {
+        if ($this->performanceLogger) {
+            $this->requestStopTime();
+            $this->performanceLogger->log($url, $this->timer, $method, $responseCode);
+        }
+    }
+
     /**
      * @param LoggerInterface $logger
      */
@@ -175,13 +203,22 @@ class SalesforceClient implements SalesforceClientInterface, LoggerAwareInterfac
     }
 
     /**
+     * @param PerformanceLoggerInterface $performanceLogger
+     */
+    public function setPerformanceLogger(PerformanceLoggerInterface $performanceLogger)
+    {
+        $this->performanceLogger = $performanceLogger;
+    }
+
+    /**
      * @param BadResponseException $e
      * @param $url
      * @param null $data
      * @return ResponseInterface
      */
-    protected function manageError(BadResponseException $e, $url, $data = null)
+    protected function manageError(BadResponseException $e, $url, $data = null, $method = null, $responseCode = 500)
     {
+        $this->performanceLog($url, $method, $responseCode);
         if ($this->logger) {
             $this->logger->error($e->getMessage(), [
                 'url' => $url,
@@ -191,8 +228,9 @@ class SalesforceClient implements SalesforceClientInterface, LoggerAwareInterfac
         return $this->responseCreator->create($e->getResponse());
     }
 
-    protected function logRequest($url, $data = null, $responseCode = null, $response = null)
+    protected function logRequest($url, $data = null, $responseCode = null, $response = null, $method = null)
     {
+        $this->performanceLog($url, $method, $responseCode);
         if ($this->logger) {
             $this->logger->log(LogLevel::DEBUG, '[Request Log]', [
                 'url' => $url,
